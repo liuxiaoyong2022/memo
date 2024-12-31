@@ -5,13 +5,14 @@ num_init_past_frames: 2
 num_past_frames: 16
 inference_steps: 20
 cfg_scale: 3.5
-weight_dtype: fp32
 #weight_dtype: bf16
+weight_dtype: fp32
 enable_xformers_memory_efficient_attention: true
 
-model_name_or_path: memoavatar/memo
-# model_name_or_path: checkpoints
-vae: stabilityai/sd-vae-ft-mse
-wav2vec: facebook/wav2vec2-base-960h
-emotion2vec: iic/emotion2vec_plus_large
+model_name_or_path: ../../models/memo
+#model_name_or_path: checkpoints
+#vae: stabilityai/sd-vae-ft-mse
+vae: ../../models/memo/stabilityai/sd-vae-ft-mse
+wav2vec: ../../models/memo/facebook/wav2vec2-base-960h
+emotion2vec: ../../models/memo/iic/emotion2vec_plus_large
 misc_model_dir: checkpoints
