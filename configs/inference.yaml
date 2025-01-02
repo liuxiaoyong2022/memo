@@ -1,11 +1,10 @@
 resolution: 512
-num_generated_frames_per_clip: 4
+num_generated_frames_per_clip: 8
 fps: 30
 num_init_past_frames: 2
-num_past_frames: 4
+num_past_frames: 8
 inference_steps: 4
 cfg_scale: 3.5
-#weight_dtype: bf16
 weight_dtype: fp16
 enable_xformers_memory_efficient_attention: true
 
