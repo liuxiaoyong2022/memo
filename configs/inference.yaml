@@ -1,9 +1,9 @@
 resolution: 512
-num_generated_frames_per_clip: 16
+num_generated_frames_per_clip: 4
 fps: 30
 num_init_past_frames: 2
-num_past_frames: 16
-inference_steps: 20
+num_past_frames: 4
+inference_steps: 4
 cfg_scale: 3.5
 #weight_dtype: bf16
 weight_dtype: fp16
