@@ -1,11 +1,11 @@
 resolution: 256
-num_generated_frames_per_clip: 16
-fps: 30
+num_generated_frames_per_clip: 8
+fps: 40
 num_init_past_frames: 2
-num_past_frames: 16
+num_past_frames: 8
 inference_steps: 20
 cfg_scale: 3.5
-weight_dtype: fp16
+weight_dtype: fp32
 enable_xformers_memory_efficient_attention: true
 
 model_name_or_path: ../../models/memo
