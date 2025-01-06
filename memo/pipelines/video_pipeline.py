@@ -299,7 +299,7 @@ class VideoPipeline(DiffusionPipeline):
         # Post-processing
         images = self.decode_latents(latents)  # (b, c, f, h, w)
         # print(f"***--->images.shape:{images.shape}")
-        print(f"***--->images[0][1][10]:{format(images[0][1][10])}")
+        print(f"***--->images[0][1][10]:{format(images[0][1][-1])}")
 
         # ***--->latents.shape:torch.Size([1, 4, 16, 64, 64])
         # ***--->images.shape:(1, 3, 16, 512, 512)
