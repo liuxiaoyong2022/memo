@@ -128,7 +128,8 @@ class VideoPipeline(DiffusionPipeline):
         latents = rearrange(latents, "b c f h w -> (b f) c h w")
         video = []
         for frame_idx in range(latents.shape[0]):
-            video.append(self.vae.decode(latents[frame_idx : frame_idx + 1]).sample)
+            sample = self.vae.decode(latents[frame_idx : frame_idx + 1]).sample
+            video.append(sample)
         video = torch.cat(video)
         video = rearrange(video, "(b f) c h w -> b c f h w", f=video_length)
         video = (video / 2 + 0.5).clamp(0, 1)
@@ -168,7 +169,6 @@ class VideoPipeline(DiffusionPipeline):
         # Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
         timesteps = self.scheduler.timesteps
-
         batch_size = 1
 
         # prepare clip image embeddings
@@ -196,6 +196,7 @@ class VideoPipeline(DiffusionPipeline):
 
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
+
 
         # Prepare ref image latents
         ref_image_tensor = rearrange(ref_image, "b f c h w -> (b f) c h w")
@@ -267,13 +268,25 @@ class VideoPipeline(DiffusionPipeline):
                     uc_mask=uc_mask,
                 ).sample
 
+                # print(f"***--->timestep t :{t} Init noise_pred:{noise_pred.shape} \n   "
+                #       f"noise_pred[0][0][0]:{format(noise_pred[0][0][0])} \n"
+                #       f"noise_pred[0][0][-1]:{format(noise_pred[0][0][-1])} \n"
+                #       f"noise_pred[-1][0][0]:{format(noise_pred[-1][0][0])} \n"
+                #       f"noise_pred[-1][-1][-1]:{format(noise_pred[-1][-1][-1])} "
+                #       )
+
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
                     noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
+                # print(f"***--->timestep t :{t} noise_pred:{noise_pred.shape}   noise_pred:{format(noise_pred)} ")
+
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
+
+                # print(f"***--->timestep t :{t} latents.shape:{latents.shape}   latents[0][0][0]:{format(latents[0][0][0])} ")
+
 
                 # call the callback, if provided
                 if i == len(timesteps) - 1 or (i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0:
@@ -282,8 +295,21 @@ class VideoPipeline(DiffusionPipeline):
                         step_idx = i // getattr(self.scheduler, "order", 1)
                         callback(step_idx, t, latents)
 
+
         # Post-processing
         images = self.decode_latents(latents)  # (b, c, f, h, w)
+        # print(f"***--->images.shape:{images.shape}")
+        print(f"***--->images[0][1][10]:{format(images[0][1][10])}")
+
+        # ***--->latents.shape:torch.Size([1, 4, 16, 64, 64])
+        # ***--->images.shape:(1, 3, 16, 512, 512)
+        # ***--->images.fame:[[nan nan nan ... nan nan nan]
+        #  [nan nan nan ... nan nan nan]
+        #  [nan nan nan ... nan nan nan]
+        #  ...
+        #  [nan nan nan ... nan nan nan]
+        #  [nan nan nan ... nan nan nan]
+        #  [nan nan nan ... nan nan nan]]
 
         # Convert to tensor
         if output_type == "tensor":

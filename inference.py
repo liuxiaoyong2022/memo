@@ -196,10 +196,14 @@ def main():
 
     video_frames = []
     num_clips = audio_emb.shape[0] // config.num_generated_frames_per_clip
+
+    print(f"num_clips-->{format(num_clips)}")
     for t in tqdm(range(num_clips), desc="Generating video clips"):
         if len(video_frames) == 0:
             # Initialize the first past frames with reference image
+
             past_frames = pixel_values.repeat(config.num_init_past_frames, 1, 1, 1)
+            print(f"***--> init first past_frame pixel_values.shape :{pixel_values.shape}  past_frames.shape (repeat by pixel_values) :{past_frames.shape} ")
             past_frames = past_frames.to(dtype=pixel_values.dtype, device=pixel_values.device)
             pixel_values_ref_img = torch.cat([pixel_values, past_frames], dim=0)
         else:
@@ -211,6 +215,7 @@ def main():
             pixel_values_ref_img = torch.cat([pixel_values, past_frames], dim=0)
 
         pixel_values_ref_img = pixel_values_ref_img.unsqueeze(0)
+
 
         audio_tensor = (
             audio_emb[

@@ -477,6 +477,13 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         if mask_cond_fea is not None:
             sample = sample + mask_cond_fea
 
+        # print(f"***--->pre-process sample:{sample.shape} \n   "
+        #       f"sample[0][0][0]:{format(sample[0][0][0])} \n"
+        #       f"sample[0][0][-1]:{format(sample[0][0][-1])} \n"
+        #       f"sample[-1][0][0]:{format(sample[-1][0][0])} \n"
+        #       f"sample[-1][-1][-1]:{format(sample[-1][-1][-1])} "
+        #       )
+
         # down
         down_block_res_samples = (sample,)
         for i, downsample_block in enumerate(self.down_blocks):
@@ -516,6 +523,12 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
             down_block_res_samples = new_down_block_res_samples
 
+        # print(f"***--->after down_blocks sample:{sample.shape} \n   "
+        #       f"sample[0][0][0]:{format(sample[0][0][0])} \n"
+        #       f"sample[0][0][-1]:{format(sample[0][0][-1])} \n"
+        #       f"sample[-1][0][0]:{format(sample[-1][0][0])} \n"
+        #       f"sample[-1][-1][-1]:{format(sample[-1][-1][-1])} "
+        #       )
         # mid
         sample, audio_embedding = self.mid_block(
             sample,
@@ -532,6 +545,13 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         if mid_block_additional_residual is not None:
             sample = sample + mid_block_additional_residual
+
+        # print(f"***--->after mid_blocks sample:{sample.shape} \n   "
+        #       f"sample[0][0][0]:{format(sample[0][0][0])} \n"
+        #       f"sample[0][0][-1]:{format(sample[0][0][-1])} \n"
+        #       f"sample[-1][0][0]:{format(sample[-1][0][0])} \n"
+        #       f"sample[-1][-1][-1]:{format(sample[-1][-1][-1])} "
+        #       )
 
         # up
         for i, upsample_block in enumerate(self.up_blocks):
@@ -571,7 +591,12 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
                     is_new_audio=is_new_audio,
                     update_past_memory=update_past_memory,
                 )
-
+        # print(f"***--->after up_blocks sample:{sample.shape} \n   "
+        #       f"sample[0][0][0]:{format(sample[0][0][0])} \n"
+        #       f"sample[0][0][-1]:{format(sample[0][0][-1])} \n"
+        #       f"sample[-1][0][0]:{format(sample[-1][0][0])} \n"
+        #       f"sample[-1][-1][-1]:{format(sample[-1][-1][-1])} "
+        #       )
         # post-process
         sample = self.conv_norm_out(sample)
         sample = self.conv_act(sample)
