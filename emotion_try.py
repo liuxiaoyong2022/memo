@@ -25,8 +25,8 @@ from funasr import AutoModel
 # model="iic/emotion2vec_base_finetuned"
 # model="iic/emotion2vec_plus_seed"
 # model="iic/emotion2vec_plus_base"
-# model_id = "iic/emotion2vec_plus_large"
-model_id = "../../models/memo/iic/emotion2vec_plus_large"
+model_id = "iic/emotion2vec_plus_large"
+# model_id = "../../models/memo/iic/emotion2vec_plus_large"
 
 model = AutoModel(
     model=model_id,
