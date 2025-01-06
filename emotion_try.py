@@ -25,14 +25,15 @@ from funasr import AutoModel
 # model="iic/emotion2vec_base_finetuned"
 # model="iic/emotion2vec_plus_seed"
 # model="iic/emotion2vec_plus_base"
-model_id = "iic/emotion2vec_plus_large"
-# model_id = "../../models/memo/iic/emotion2vec_plus_large"
+# model_id = "iic/emotion2vec_plus_large"
+model_id = "../../models/memo/iic/emotion2vec_plus_large"
 
 model = AutoModel(
     model=model_id,
     hub="ms",  # "ms" or "modelscope" for China mainland users; "hf" or "huggingface" for other overseas users
 )
 
-wav_file = f"{model.model_path}/example/test.wav"
+wav_file = f"assets/examples/audios/fly_me_to_the_moon.mp3"
+# wav_file = f"{model.model_path}/example/test.wav"
 rec_result = model.generate(wav_file, output_dir="emotion2vec/outputs", granularity="utterance", extract_embedding=False)
 print(rec_result)
